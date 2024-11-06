@@ -1,4 +1,6 @@
 import { Component } from "react";
+import CardList from "./components/card-list/CardList";
+import SearchField from "./components/search-field/SearchField";
 import "./App.css";
 
 class App extends Component {
@@ -7,6 +9,7 @@ class App extends Component {
 
     this.state = {
       students: [],
+      searchField: "",
     };
   }
 
@@ -19,13 +22,29 @@ class App extends Component {
         })
       );
   }
-  
+
+  handleSearch = (event) => {
+    const searchField = event.target.value.toLowerCase();
+    this.setState(() => {
+      return { searchField };
+    });
+  };
+
   render() {
+    const { students, searchField } = this.state;
+    const { handleSearch } = this;
+    const filteredStudents = students.filter((student) => {
+      return student.name.toLowerCase().includes(searchField);
+    });
     return (
       <div className="App">
-        {this.state.students.map((student) => {
-          return <h1 key={student.id}>{student.name}</h1>;
-        })}
+        <h1 className="app-title">Student Rolodex</h1>
+        <SearchField
+          onSearch={handleSearch}
+          placeholder="Search Students"
+          className="student-search-box"
+        />
+        <CardList students={filteredStudents} />
       </div>
     );
   }
